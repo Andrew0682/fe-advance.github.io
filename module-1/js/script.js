@@ -1,45 +1,39 @@
-const keyboardUp = "qwertyuiop[]";
-console.log(keyboardUp.toLowerCase()); // qwertyuiop[]
-console.log(keyboardUp.toUpperCase()); // QWERTYUIOP[]
-console.log(keyboardUp.length); // 12
-let numberUp = 12;
-console.log(keyboardUp.charAt(0)); // q
-console.log(keyboardUp.charAt(11)); // ]
-console.log(keyboardUp.indexOf("[")); // 10
-numberUp = 10;
-console.log(keyboardUp.indexOf("]")); // 11
-numberUp = 11;
+const firstLine = "qwertyuiop[]";
+const secondLine = "asdfghjkl;'";
+const thirdLine = "zxcvbnm,./";
+console.log(firstLine.toLowerCase()); // qwertyuiop[]
+console.log(firstLine.toUpperCase()); // QWERTYUIOP[]
 
 
-const keyboardMiddle = "asdfghjkl;'";
-console.log(keyboardMiddle.toLowerCase()); // asdfghjkl;'
-console.log(keyboardMiddle.toUpperCase()); // ASDFGHJKL;'
-console.log(keyboardMiddle.length); // 11
-let numberMiddle = 11;
-console.log(keyboardMiddle.charAt(0)); // a
-console.log(keyboardMiddle.charAt(10)); // '
+// task 2
+const firstLineLength = firstLine.length;
+const secondLineLength = secondLine.length;
+const thirdLineLength = thirdLine.length;
 
 
-const keyboardDown = "zxcvbnm,./";
-console.log(keyboardDown.toLowerCase()); // zxcvbnm,./
-console.log(keyboardDown.toUpperCase()); // ZXCVBNM,./
-console.log(keyboardDown.length); // 10
-let numberDown = 10;
-console.log(keyboardDown.charAt(0)); // z
-console.log(keyboardDown.charAt(9)); // /
+//task 3
+let firstLineSymbol = 1;
+let secondLineSymbol = 1;
+let thirdLineSymbol = 1;
+console.log(firstLine.charAt(0));
+console.log(firstLine.charAt(firstLine.length - firstLineSymbol));
 
+console.log(secondLine.charAt(0));
+console.log(secondLine.charAt(secondLine.length - secondLineSymbol));
 
-const sameKeyboard = " ${keyboardUp} ${keyboardMiddle} ${keyboardDown} ";
-console.log(sameKeyboard); //  ${keyboardUp} ${keyboardMiddle} ${keyboardDown}
-console.log(`${keyboardUp} + ${keyboardMiddle} + ${keyboardDown} = ${keyboardUp + keyboardMiddle + keyboardDown}`); //qwertyuiop[] + asdfghjkl;' + zxcvbnm,./ = qwertyuiop[]asdfghjkl;'zxcvbnm,./
+console.log(thirdLine.charAt(0));
+console.log(thirdLine.charAt(thirdLine.length - thirdLineSymbol));
 
+//task 4 
+let positionA = firstLine.indexOf("[");
+let positionB = firstLine.indexOf("]");
 
+//task 5
 
-let numberUp = 11;
-let numberMiddle = 11;
-let numberDown = 10;
-const sameNumber = " ${numberUp} ${numberMiddle} ${numberDown} ";
-console.log(sameNumber); //  ${numberUp} ${numberMiddle} ${numberDown} 
-
-console.log(`${numberUp + numberMiddle + numberDown}`); // 32
-console.log(`${numberUp} + ${numberMiddle} + ${numberDown} = ${numberUp + numberMiddle + numberDown}`); // 11 + 11 + 10 = 32
+console.log(`firstLine = ${firstLine} 
+	secondLine = ${secondLine} 
+	thirdLine =${thirdLine} 
+	firstLineLength = ${firstLineLength} 
+	secondLineLength = ${secondLineLength} 
+	thirdLineLength = ${firstLineLength} 
+	${positionA} ${positionB}`);
