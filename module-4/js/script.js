@@ -1,30 +1,26 @@
-const alphabet = "qwertyuiop[]asdfghjkl;'zxcvbnm,./";
-let keyboard = [];
-function addKeyboardLayout(str) {
-  let signs = str.split("");
+const alphabet = "qwertyuiop[]asdfghjkl;\'zxcvbnm,.\/";
+const keyboard = addKeyboardLayout(alphabet);
+function addKeyboardLayout(alphabet) {
+  const arr = alphabet.split('');
+  const keyboard = [arr.slice(0, arr.indexOf("a")), arr.slice(arr.indexOf("a"), arr.indexOf("z")), arr.slice(arr.indexOf("z"))];
+  return keyboard;
+}
+  console.log(addKeyboardLayout(alphabet))
 
-  let line1 = signs.slice(signs.indexOf("q"), signs.indexOf("a"));
-  let line2 = signs.slice(signs.indexOf("a"), signs.indexOf("z"));
-  let line3 = signs.slice(signs.indexOf("z"), signs.indexOf("/"));
-  keyboard.push(line1, line2, line3);
-  console.log(keyboard);
+function getRandCharInRow(row) {
+  const randomStr = keyboard[row - 1];
+   const randomIndex = Math.floor(Math.random() * randomStr.length);
+   return randomStr[randomIndex];
 }
 
-addKeyboardLayout(alphabet);
+console.log(`Случайный символ из 3-ой строки -` , getRandCharInRow(3));
 
-function getRandCharInRow(arr) {
-  let rand = Math.floor(Math.random() * keyboard.length);
-  let rand2 = Math.floor(Math.random() * keyboard[rand].length);
 
-  rez = "Строка: " + rand + "," + " Буква/знак: " + keyboard[rand][rand2];
-  console.log(rez);
+function getRandCharInArr(array) {
+   const randomString = Math.floor(Math.random() * array.length);
+   const randomChar = getRandCharInRow(randomString);
+   return randomChar;
+   
 }
-getRandCharInRow(keyboard);
 
-function getRandCharInAlph(str) {
-  let rezult;
-  rand = alphabet[Math.floor(Math.random() * alphabet.length)];
-  rezult = "Случайное значение : " + rand;
-  console.log(rezult);
-}
-getRandCharInAlph(alphabet);
+console.log('Случайный символ всего алфавита - ', getRandCharInArr(keyboard));
