@@ -40,7 +40,7 @@ let langs = "";
     do {
         langs = +prompt("Выбери язык ", "en-0, ru-1, ua-2");
     if ( langs === 0 || langs === 1 || langs === 2 ) break;
-    if ( langs === false) return;
+    if ( langs === null) return;
         alert('Выбран недоступный язык');
     } while (true);
     return obj.currentLang = obj.langs[langs];
