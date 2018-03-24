@@ -31,32 +31,41 @@ const keyboard = {
     langs: ['en', 'ru', 'ua'],
     currentLang: ''
   };
-const keyboardObj = (keyboardArr, langs) => keyboard.layouts[langs] = keyboardArr;
-keyboardObj (keyboardEn, "en");
-keyboardObj (keyboardRu, "ru");
-keyboardObj (keyboardUa, "ua");
-const setLangObj = (obj) => {
-let langs = "";
+const keyboardObj = (keyboardArr, obj, language) => {
+  const rowArrey = Object.keys(obj.layouts[language]); 
+  rowArrey.forEach(function( row, j) {
+    obj.layouts[language][row] = keyboardArr[j];
+  });
+}
+
+keyboardObj(keyboardEn, keyboard, "en");
+keyboardObj(keyboardRu, keyboard, "ru");
+keyboardObj(keyboardUa, keyboard, "ua");
+const setLangObj = obj => {
+let language = "";
     do {
-        langs = +prompt("Выбери язык ", "en-0, ru-1, ua-2");
-    if ( langs === 0 || langs === 1 || langs === 2 ) break;
-    if ( langs === null) return;
+        language = +prompt("Выбери язык ", "en-0, ru-1, ua-2");
+    if ( language === 0 || language === 1 || language === 2) break;
+    if ( language === null ) return;
         alert('Выбран недоступный язык');
     } while (true);
-    return obj.currentLang = obj.langs[langs];
+    return obj.currentLang = obj.langs[language];
 }
 setLangObj(keyboard);
-const getCurrentKeybArr = (obj) => obj.layouts[obj.currentLang]; 
-
-const currentKeybArr = getCurrentKeybArr(keyboard);
 
 
 
-const getRandCharInAlph = (array) => {
-    const randomString = Math.floor(Math.random() * array.length);
-    const randomChar = Math.floor(Math.random() * array[randomString].length);
-    return array[randomString][randomChar];
-    
+const setRandomSymbol = keyboardArr => {
+    const randomSymbol = Math.floor(Math.random() * keyboardArr.length);
+    return randomSymbol;
 }
+  
+const getRandCharInAlph = (obj, callback) => {
+    const currentKeybArr = Object.values(obj.layouts[obj.currentLang]);
+    const randomString = currentKeybArr[setRandomSymbol(currentKeybArr)];
+    const randomNum = callback(randomString);
+    return randomString[randomNum];
+}
+const randomChar = getRandCharInAlph(keyboard, setRandomSymbol);
 
-console.log(`Случайный символ ${keyboard.currentLang} алфавита - ${getRandCharInAlph(currentKeybArr)}`);
+console.log(`Случайный символ ${keyboard.currentLang} алфавита - ${randomChar}`);
