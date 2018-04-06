@@ -57,7 +57,7 @@ const keyboard = {
             check = this.setCurrentLang();
           if ( check === '0' || check === '1' || check === '2' ) break;
            if ( check === null) return;
-             alert("Input correct value!");
+             alert("Введите коректные данные!");
             } while (true);
         this.currentLang = +check;
         return this;
