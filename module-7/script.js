@@ -17,7 +17,7 @@ const keyboard = {
         }
     },
     langs: ["en", "ru", "ua"],
-    currentLang: "",
+    currentLang: null,
 
     createLayout(row) {
 
