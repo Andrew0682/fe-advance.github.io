@@ -34,7 +34,7 @@ const keyboard = {
         return rowElement;
     },
     createLayouts() {
-
+        if (this.currentLang === null) return;
         let wrap = document.createElement('div');
         const keys = document.querySelector("body");
       
