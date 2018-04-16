@@ -16,7 +16,7 @@ $background: #3498db;
     position: absolute;
     right: 10px;
     z-index: 0;
-    font: 12px/26px Helvetica, serif;
+    font: 12px/26px Arial, sans-serif;
     font-weight: bold;
     text-shadow: 1px 1px 0px rgba(255,255,255,.15);
   }
@@ -26,7 +26,7 @@ $background: #3498db;
     position: absolute;
     left: 10px;
     z-index: 0;
-    font: 12px/26px Helvetica, serif;
+    font: 12px/26px Arial, sans-serif;
     font-weight: bold;
   }
   label {
@@ -55,7 +55,7 @@ $background: #3498db;
     top: -2px;
     right: 100px;
     color: $activeColor;
-    font: 26px Helvetica, serif;
+    font: 26px Arial, sans-serif;
     font-weight: bold;
   }
 }
