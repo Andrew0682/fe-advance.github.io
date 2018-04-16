@@ -1,75 +1,46 @@
-const keyboard = {
-    layouts: {
-        en: {
-            topRow: ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]"],
-            middleRow: ["a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'"],
-            bottomRow: ["z", "x", "c", "v", "b", "n", "m", ",", ".", "/"]
+let alphabet = {
+    lines: {
+        topLine: 0,
+        middleLine: 0,
+        bottomLine: 0
+    },
+    setLines:{
+        topF: function(){
+            let t = document.querySelector(".top");
+            alphabet.lines.topLine = t;
         },
-        ru: {
-            topRow: ["й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ъ"],
-            middleRow: ["ф", "ы", "в", "а", "п", "р", "о", "л", "д", "ж", "э"],
-            bottomRow: ["я", "ч", "с", "м", "и", "т", "ь", "б", "ю", "."]
+        middleF: function(){
+            let m = document.querySelector(".middle");
+            alphabet.lines.middleLine = m;
         },
-        ua: {
-            topRow: ["й", "ц", "у", "к", "е", "н", "г", "ш", "щ", "з", "х", "ї"],
-            middleRow: ["ф", "і", "в", "а", "п", "р", "о", "л", "д", "ж", "є"],
-            bottomRow: ["я", "ч", "с", "м", "и", "т", "ь", "б", "ю", "."]
+        bottomF: function(){
+            let b = document.querySelector(".bottom");
+            alphabet.lines.bottomLine = b;
         }
     },
-    langs: ["en", "ru", "ua"],
-    currentLang: null,
-
-    createLayout(row) {
-
-        let rowElement = document.createElement('ul');
-
-        let rowItems = row.map(n => n = '<li></li>')
-            .reduce((acc, next) => acc + next);
-
-        rowElement.insertAdjacentHTML('beforeend', rowItems);
-
-        const elRow = rowElement.querySelectorAll('li');
-        let arrRow = [...elRow];
-        arrRow.map((el, i) => el.textContent = row[i]);
-        return rowElement;
+    layout:{
+        topRow: ['q' , 'w' , 'e' , 'r' , 't' , 'y' , 'u' , 'i' , 'o' , 'p'],
+        middleRow: ['a' , 's' , 'd' , 'f' , 'g' , 'h' , 'j' , 'k' , 'l'],
+        bottomRow: ['z' , 'x' , 'c' , 'v' , 'b' , 'n' , 'm']
     },
-    createLayouts() {
-        if (this.currentLang === null) return;
-        let wrap = document.createElement('div');
-        const keys = document.querySelector("body");
-      
-        const top = this.createLayout(this.layouts[this.langs[this.currentLang]].topRow);
-        const middle = this.createLayout(this.layouts[this.langs[this.currentLang]].middleRow);
-        const bottom = this.createLayout(this.layouts[this.langs[this.currentLang]].bottomRow);
-//сборка элементов
-        wrap.append(top, middle, bottom);
-        keys.append(wrap);
-        return this;
-    },
-//выбор языка
-    setCurrentLang() {
-        return prompt("Выберите язык клавиатуры: en-0, ru-1, ua-2", '');
-    },
-
-    checkPositiveInteger() {
-        let check, langChoise;
-        do {
-            check = this.setCurrentLang();
-          if ( check === '0' || check === '1' || check === '2' ) break;
-           if ( check === null) return;
-             alert("Введите коректные данные!");
-            } while (true);
-        this.currentLang = +check;
-        return this;
+    createLayout: function(){
+        this.setLines.topF()
+        this.setLines.middleF();
+        this.setLines.bottomF();
+        
+        let line = Object.keys(this.lines);
+        
+        let key = Object.keys(this.layout);
+        
+        for(let i = 0; i < line.length; i++){
+            let currentLine =  this.lines[line[i]];
+            let row = this.layout[key[i]];
+            for(let j = 0; j < row.length; j++){
+                let wrap = document.createElement("div");
+                wrap.textContent = `${row[j]}`;
+                currentLine.appendChild(wrap);
+            };
+        }
     }
 };
-
-function run() {
-    keyboard.checkPositiveInteger().createLayouts();
-}
-run();
-
-
-
-
-
+alphabet.createLayout();
