@@ -38,7 +38,7 @@ const keyboardKeydown = (event) => {
     })
     targetButton.classList.add('keyboard__btn--active');
   } 
-      pressed.textContent += event.key;
+      pressed.textContent = event.key;
 }
 
 const keyboardKeyup = (event) => {
