@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<p class="timer">0</p>
+<div class="exercise">
+  <p>Input this string: <span class="string"></span></p>
+  <p>Your string: <span class="pressed"></span></p>
+  <p>result:  <span class="result"></span></p>
+  <p>best result: <span class="best_result"></span></p>
+</div>
+<div class="keyboard" id="keyboard"></div>
+
+<script type="text/template" id="keyboard__row">
+
+  <% for (let i =0; i<rows.length; i++) {
+       %>
+    <div class="keyboard__row">
+      <%
+       rows[i].forEach((btn) => { %>
+        <button class="keyboard__btn"><%- btn %></button>
+        <% })  %>
+    </div>
+    <%                     
+                                      }
+ %>
+      <div class="keyboard__row"> <button class="keyboard__btn keyboard__btn--space"  </button> </div>
+      <%
+                                       %>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"> </script>
+
+<script src="script.js"></script>
+</body>
+</html>
