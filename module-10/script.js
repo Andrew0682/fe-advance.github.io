@@ -1,83 +1,124 @@
 
-const langs = "qwerty";
+/*
+  Создать компонент счетчика времени.
+  
+  Простой прямоугольник который показывает время
+  со старта упражения и до того момента когда все
+  клавиши были верно нажаты.
+  
+  На входе есть строка символов для упражнения.
+  
+  Написать метод countKPS() который,по окончанию упражнения,
+  возвращает кол-во верных клавишь в секунду которое было нажато за
+  время выполнения упражнения.
+  
+  Записать результат в localStorage, но только в том случае если
+  он лучше чем тот что уже есть в localStorage.
+  
+  При повторном посещении страницы надо брать то что записано
+  в localStorage и вешать на страницу, это будет компонент
+  лучшего результата.
+*/
+
+// дается строка и от первого нажатия до посленего
+// правильного набранного знака считать время
 const string = "qryte";
+let isTimerOn = false;
 const timerOutput = document.querySelector(".timer");
-const str = document.querySelector(".string");
-str.textContent = string;
-let answer = document.querySelector(".result");
-const bestResult = document.querySelector(".best_result");
-
-const counter = () => {
-  let timer = Number(timerOutput.textContent);
-    return () => {
-      return timerOutput.textContent = timer++;
-  }
-};
-
-const visualTimer = counter();
-const timerID = setInterval(visualTimer, 1000);
-const lang = {
-   en: "qwertyuiop[]asdfghjkl;'zxcvbnm,./ "
-}; 
-
-lang.rows=[];  
-lang.rows[0] = (lang.en.slice(0, 12)).split("");
-lang.rows[1] = (lang.en.slice(12, 23)).split("");
-lang.rows[2] = (lang.en.slice(23, 33)).split("");
-
-const html = document.querySelector('#keyboard__row').textContent.trim();
-const compiled = _.template(html);
-const result = compiled(lang);
-const container = document.querySelector('#keyboard');
-container.innerHTML = result;
+let counter = 0;
+let correctAnswer = 0;
+const arr = [];
+let start, startTime, now, average;
+let locStr = localStorage.getItem('average' || null);
 const keyboard = document.querySelector(".keyboard");
-const pressed = document.querySelector(".pressed");
 
-const main = () => {
-   if ( string.length > pressed.textContent.length) {
-            let difference = string.length - pressed.textContent.length;
-            let str3 =  string.slice(0, -difference);
-              if (str3 !== pressed.textContent ) {
-               clearInterval(timerID); 
-               let result = (pressed.textContent.length-1)/timerOutput.textContent
-               answer.textContent =  result;
-               updateResult(answer);
-    }
+
+function getFormattedTime(time) {
+  const date = new Date(time);
+  const mt =
+    date.getMinutes() > 9 ? date.getMinutes() : "0" + date.getMinutes();
+  const sc =
+    date.getSeconds() > 9 ? date.getSeconds() : "0" + date.getSeconds();
+  const ms =
+    date.getMilliseconds() < 10
+      ? "00" + date.getMilliseconds()
+      : date.getMilliseconds() < 100
+        ? "0" + date.getMilliseconds()
+        : date.getMilliseconds();
+
+  return `${mt}:${sc}:${ms}`;
+}
+ 
+
+function updateClockface(time) {
+  timerOutput.textContent = getFormattedTime(time);
+}
+
+
+function startTimer() {
+  if(isTimerOn === false) {
+    isTimerOn = true;
+    startTime = new Date();
+    start = setInterval( () => {
+      now = new Date();
+      updateClockface(now.getTime() - startTime.getTime());
+    }, 1);
   }
-   else if (string.length === pressed.textContent.length) {
-            clearInterval(timerID);
-            let result = (pressed.textContent.length)/timerOutput.textContent;
-            answer.textContent =  result;
-            updateResult(answer);
-     }
 }
 
-const btnClick = event => {
-    if (event.target.classList.contains('keyboard__btn')) {
-        pressed.textContent += event.target.textContent ;
-        main();
-   }
-};
 
-keyboard.addEventListener("click", btnClick);
+function countKPIs(event) {
+  let letter = getChar(event);
+  if(letter === string[counter]) {
+    counter++;
+    correctAnswer++;
+    arr.push(letter);
+    keyboard.innerHTML += letter;
+  } else {
+    keyboard.innerHTML += `<span class="red">${letter}</span>`;
+  }
 
-const updateResult = (answer) => {
-  const data = localStorage.getItem('result');
-  if ( Number(data) < Number(answer.textContent)) {
-     localStorage.setItem('result',answer.textContent );
-     bestResult.textContent = localStorage.getItem('result');
-     }; 
-}
+  if(arr.length === string.length) {
+    clearInterval(start);
+    let totalTime = now.getTime() - startTime.getTime();
+    average = (correctAnswer / (totalTime / 1000)).toFixed(2);
+    if(locStr === null) {
+      localStorage.setItem('average', average);
+      locStr = localStorage.getItem('average');
+    }
 
-bestResult.textContent = localStorage.getItem('result');
-
-const keys = lang.en.split("");
-
-const keyboardKeydown = (event) => {
-  if (keys.includes(event.key)) {
-     pressed.textContent += event.key;
-     main();
-  } 
+    if(locStr < average) {
+      localStorage.removeItem('average');
+      localStorage.setItem('average', average);
+      locStr = localStorage.getItem('average');
+    }
     
+    return announcement();
+  }
 }
-window.addEventListener("keydown", keyboardKeydown);
+
+
+function announcement() {
+  setTimeout( () => {
+    alert(`Кол-во правильно нажатых клавиш ${correctAnswer} из ${string.length}. 
+    Ваша скорость набора ${average} символов в секунду. 
+    Ваш лучший результат ${localStorage.getItem('average')}.`);
+  }, 100);
+}
+
+
+function getChar(event) {
+  if (event.which == null) { // IE
+    if (event.keyCode < 32) return null; // спец. символ
+    return String.fromCharCode(event.keyCode)
+  }
+
+  if (event.which != 0 && event.charCode != 0) { // все кроме IE
+    if (event.which < 32) return null; // спец. символ
+    return String.fromCharCode(event.which); // остальные
+  }
+
+  return null; // спец. символ
+}
+window.addEventListener('keypress', startTimer);
+window.addEventListener('keypress', countKPIs);
