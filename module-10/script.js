@@ -78,7 +78,7 @@ function countKPIs(event) {
   if(arr.length === string.length) {
     clearInterval(start);
     let totalTime = now.getTime() - startTime.getTime();
-    average = (correctAnswer / (totalTime / 1000)).toFixed(2);
+    average = (correctAnswer / (totalTime / 1000)).toFixed(3);
     if(locStr === null) {
       localStorage.setItem('average', average);
       locStr = localStorage.getItem('average');
@@ -105,17 +105,26 @@ function announcement() {
 
 
 function getChar(event) {
-  if (event.which == null) { // IE
-    if (event.keyCode < 32) return null; // спец. символ
+  if (event.which == null) { 
+    if (event.keyCode < 32) return null; 
     return String.fromCharCode(event.keyCode)
   }
 
-  if (event.which != 0 && event.charCode != 0) { // все кроме IE
-    if (event.which < 32) return null; // спец. символ
-    return String.fromCharCode(event.which); // остальные
+  if (event.which != 0 && event.charCode != 0) { 
+    if (event.which < 32) return null; 
+    return String.fromCharCode(event.which); 
   }
 
-  return null; // спец. символ
+  return null; 
+
 }
+
+
+
+const updateView = () => {
+  keyboard.innerHTML += localStorage.getItem('sec') || '0';
+};
+
+updateView();
 keyboard.addEventListener('keypress', startTimer);
 keyboard.addEventListener('keypress', countKPIs);
