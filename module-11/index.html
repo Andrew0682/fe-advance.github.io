@@ -6,29 +6,74 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-<form action="#">
-  <div class="form__row">
-    <div class="form__input-wrapper">
-      <label class="form__lbl">User ID:</label>
-      <input class="form__input form__input_user-id" type="text">
-      <label class="form__lbl">User Name:</label>
-      <input class="form__input form__input_user-name" type="text">
-      <label class="form__lbl">User Age:</label>
-      <input class="form__input form__input_user-age" type="text">
+<body>
+    
+      <div class="container">
+         
+          <div class="panel">
+             
+             <h2 class="panel__title">Панель управления</h2>
+             
+              <form class="search-form__all">
+               <div class="label">Вывести список всех пользователей в БД</div>
+                <button class="mdc-btn" type="submit" id="js-all__users">All users</button>
+              </form>
+              
+              <form class="search-form__search">
+               <div class="label">Найти пользователя по его id</div>
+               <div class="form__block">
+                   <input type="text" class="input__search" placeholder="Введите id пользователя">
+                   <button class="mdc-btn" type="submit" id="js-user__id">Search</button>
+               </div>
+              </form>
+              
+              <form class="search-form__add">
+               <div class="label">Добавить нового пользователя в БД</div>
+               <div class="form__block">
+                   <div class="form__inputs">
+                       <input type="text" class="input__add-name" placeholder="Введите имя пользователя">
+                       <input type="text" class="input__add-age" placeholder="Введите возраст пользователя">
+                   </div>
+                    <button class="mdc-btn" type="submit" id="js-add__user">Add user</button>
+               </div>
+              </form>
+              
+              <form class="search-form__del">
+               <div class="label">Удалить пользователя по его id</div>
+               <div class="form__block">
+                   <input type="text" class="input__del" placeholder="Введите id ">
+                    <button class="mdc-btn" type="submit" id="js-user__del">Delete</button>
+               </div>
+              </form>
+              
+              <form class="search-form__put">
+               <div class="label">Обновить данные пользователя</div>
+               <div class="form__block">
+                   <div class="form__inputs">
+                       <input type="text" class="input__put-id" placeholder="Введите id пользователя">
+                       <input type="text" class="input__put-name" placeholder="Введите имя пользователя">
+                       <input type="text" class="input__put-age" placeholder="Введите возраст пользователя">
+                   </div>
+                    <button class="mdc-btn" type="submit" id="js-user__put">PUT user</button>
+               </div>
+              </form>
+          </div>
+          
+          <div class="panel">
+             
+             <h2 class="panel__title">Результаты операций с бэкендом</h2>
+             
+              <p class="result"></p>
+          </div>
     </div>
-    <button class="form__btn form__btn_show-all">Show All</button>
-    <button class="form__btn form__btn_get-user">Get User</button>
-    <button class="form__btn form__btn_add-user">Add User</button>
-    <button class="form__btn form__btn_remove-user">Remove User</button>
-    <button class="form__btn form__btn_update-user">Update User</button>
-  </div>
-  <div class="form__row">
-    <div class="result"></div>
-    <button class="form__btn form__btn_clear-result">Clear</button>
-  </div>
-</form>
 
-
+<script type="text/template" id="templ">
+        <div>
+            <span class="span__id">id:</span><span><%- id%></span>
+            <span class="span__name">name:</span><span><%- name%></span>
+        </div>
+    </script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
 <script src="script.js"></script>
 </body>
 </html>
