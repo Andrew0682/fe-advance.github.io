@@ -1,191 +1,157 @@
-/*
-  Шаблон
-*/
-const result = document.querySelector(".result");
-const htmlTpl = document.querySelector("#templ").textContent.trim();
-const compiled = _.template(htmlTpl);
+"use strict"
 
-/*
-  DOM-элементы (поля ввода - input)
-*/
-const inputSearch = document.querySelector(".input__search");
-const inputAddUsers = document.querySelector(".input__add-name");
-const inputAddAge = document.querySelector(".input__add-age");
-const inputDelUsers = document.querySelector(".input__del");
-const inputPutUsers = document.querySelector(".input__put-id");
-const inputPutName = document.querySelector(".input__put-name");
-const inputPutAge = document.querySelector(".input__put-age");
+const url = "https://test-users-api.herokuapp.com/users/";
 
-/*
-  Кнопки форм
-*/
-const allUsersBtn = document.querySelector("#js-all__users");
-const usersIdBtn = document.querySelector("#js-user__id");
-const usersAddBtn = document.querySelector("#js-add__user");
-const usersDelBtn = document.querySelector("#js-user__del");
-const usersPutBtn = document.querySelector("#js-user__put");
+// Возвращает всех пользователей из БД
 
-/*
-  Функции для форм
-*/
-function getAllUsers(evt) {
-  evt.preventDefault();
-    
-    fetch("https://test-users-api.herokuapp.com/users", {
-        method: 'get'
-    })
-    
+const btnGetAllUsers = document.querySelector(".btnGetAllUsers");
+const ret = document.querySelector(".return");
+btnGetAllUsers.addEventListener("click", getAllUsers);
+
+function getAllUsers (e) {
+    e.preventDefault();
+    fetch(url, {method: "GET"})
+        .then(response => {
+            if (response.ok) return response.json();
+            throw new Error("Error fetching data");
+        })
+        .then(data => {
+          ret.innerHTML = Object.values(data)[0].reduce((acc,e) =>  acc + `<tr>
+                <td>${e.id}</td>
+                <td>${e.name}</td>
+                <td>${e.age}</td>
+                </tr> `, '');
+          })
+        .catch(error => {
+            console.error("Error: ", error);
+        })
+}
+
+//Возвращает пользователя с переданным id
+
+const inpGetUserById = document.querySelector(".inpGetUserById");
+const btnGetUserById = document.querySelector(".btnGetUserById");
+btnGetUserById.addEventListener("click", getUserById);
+
+function getUserById (e) {
+  e.preventDefault();
+  fetch(url+inpGetUserById.value, {method: "GET"})
+  .then(response => {
+       if (response.ok) return response.json();
+       throw new Error("Error fetching data");
+   })
+  .then(data => {ret.innerHTML =`
+        <tr>
+           <td>${data.data.id}</td>
+           <td>${data.data.name}</td>
+           <td>${data.data.age}</td>
+        </tr>`
+   })
+   .catch(error => {
+        console.error("Error: ", error);
+   });
+   inpGetUserById.value = '';
+}
+
+//Записывает в БД юзера с полями name и age
+
+const inpAddUserName = document.querySelector(".inpAddUserName");
+const inpAddUserAge = document.querySelector(".inpAddUserAge");
+const btnAddUser = document.querySelector(".btnAddUser");
+btnAddUser.addEventListener("click", addUser);
+
+function addUser (e) {
+  e.preventDefault();
+  fetch(url, {
+    method: "POST",
+    body: JSON.stringify({ name: inpAddUserName.value, age: inpAddUserAge.value}),
+    headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+    }
+  })
     .then(response => {
-      if (response.ok) return response.json();
-      throw new Error("Error fetching data");
+        if(response.ok) return response.json();
+        throw new Error("Error fetching data");
     })
-    .then(list => {
-        let htmlString = "<h3>Name Users</h3>";
-        list.data.forEach(item => {
-            htmlString += compiled(item);
-        });
-        result.innerHTML = htmlString; 
+    .then(data => {ret.innerHTML =`
+        <tr>
+           <td>AddUser</td>
+           <td>${data.data.name}</td>
+           <td>${data.data.age}</td>
+        </tr>`
+   })
+    .catch(error => {
+        console.error("Error: ", error);
+    });
+     inpAddUserName.value = '';
+    inpAddUserAge.value = '';
+}
+
+//Удаляет из БД юзера по указанному id
+
+const inpRemoveUser = document.querySelector(".inpRemoveUser");
+const btnRemoveUser = document.querySelector(".btnRemoveUser");
+btnRemoveUser.addEventListener("click", removeUser);
+
+function removeUser (e) {
+  e.preventDefault();
+  fetch(url+inpRemoveUser.value, {
+    method: "DELETE"
+  })
+    .then(response => {
+        if(response.ok) return response.json();
+        throw new Error("Error fetching data");
     })
-    .catch(err => {
-      console.error("Error: ", err);
+    .then(data => {ret.innerHTML =`
+        <tr>
+           <td>(DELETE)${data.data.id}</td>
+           <td>${data.data.name}</td>
+           <td>${data.data.age}</td>
+        </tr>`
+   })
+    .catch(error => {
+        console.error("Error: ", error);
+    });
+    inpRemoveUser.value = '';
+}
+
+//Обновляеть данные пользователя по id. user
+
+const inpUpdateUserId = document.querySelector(".inpUpdateUserId");
+const inpUpdateUserName = document.querySelector(".inpUpdateUserName");
+const inpUpdateUserAge = document.querySelector(".inpUpdateUserAge");
+const btnUpdateUser = document.querySelector(".btnUpdateUser");
+btnUpdateUser.addEventListener("click", updateUser);
+
+function updateUser (e) {
+  e.preventDefault();
+  fetch(url+inpUpdateUserId.value, {
+    method: "PUT",
+    body: JSON.stringify({ name: inpUpdateUserName.value, age: inpUpdateUserAge.value}),
+    headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json'
+    }
+  })
+    .then(response => {
+        if(response.ok) return response.json();
+        throw new Error("Error fetching data");
+    })
+    .then(data => {ret.innerHTML =`
+        <tr>
+           <td>(Update)${data.data.id}</td>
+           <td>${data.data.name}</td>
+           <td>${data.data.age}</td>
+        </tr>`
+        inpUpdateUserId.value = '';
+        inpUpdateUserAge.value = '';
+        inpUpdateUserName.value = '';
+    })
+    .catch(error => {
+        console.error("Error: ", error);
     });
 }
 
-function getUserById(id) {
-    
-    fetch(`https://test-users-api.herokuapp.com/users/${id}`, {
-        method: 'get'
-    })
-    
-    .then(response => {
-      if (response.ok) return response.json();
-      throw new Error("Error fetching data");
-    })
-    .then(list => {
-        let nameFind = list.data.name;
-        let htmlString = "<h3>Найденный пользователь:</h3>";
-        htmlString += nameFind;
-        result.innerHTML = htmlString; 
-    })
-    .catch(err => {
-      console.error("Error: ", err);
-    });
-}
 
-function addUser(name, age) {
-    
-    fetch('https://test-users-api.herokuapp.com/users', {
-        method: 'POST',
-        body: JSON.stringify({ 
-            name: name, 
-            age: age
-        }),
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        }
-    })
-    
-    .then(response => {
-      if (response.ok) {
-         return response.json(); 
-      } 
-      throw new Error("Error fetching data");
-    })
-    .then(list => {
-        let htmlString = "<h3>Новый пользователь удачно добавлен</h3>";
-        result.innerHTML = htmlString; 
-    })
-    .catch(err => {
-      console.error("Error: ", err);
-    });
-    inputAddUsers.value = '';
-    inputAddAge.value = '';
-}
 
-function removeUser(id) {
-    
-    fetch(`https://test-users-api.herokuapp.com/users/${id}`, {
-        method: 'DELETE'
-    })
-    
-    .then(response => {
-      if (response.ok) {
-         return response.json(); 
-      } 
-      throw new Error("Error fetching data");
-    })
-    .then(list => {
-        inputDelUsers.value = '';
-        let htmlString = "<h3>Пользователь удален</h3>";
-        result.innerHTML = htmlString; 
-    })
-    .catch(err => {
-      console.error("Error: ", err);
-    });
-}
-
-function updateUser(id, user) {
-    
-    fetch(`https://test-users-api.herokuapp.com/users/${id}`, {
-        method: 'PUT',
-        body: JSON.stringify(user),
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        }
-    })
-    
-    .then(response => {
-      if (response.ok) {
-         return response.json(); 
-      } 
-      throw new Error("Error fetching data");
-    })
-    .then(list => {
-        let htmlString = "<h3>Данные пользователя обновлены</h3>";
-        result.innerHTML = htmlString; 
-        inputPutUsers.value = '';
-        inputPutAge.value = '';
-        inputPutName.value = '';
-    })
-    .catch(err => {
-      console.error("Error: ", err);
-    });
-}
-
-/*
-   Вспомогательные функции
-*/
-const findUserName = event => {
-    event.preventDefault();
-    getUserById(inputSearch.value);
-};
-
-const addNewUsers = event => {
-    event.preventDefault();
-    addUser(inputAddUsers.value, inputAddAge.value);
-};
-
-const deleteUser = event => {
-    event.preventDefault();
-    removeUser(inputDelUsers.value);
-};
-
-const putUser = event => {
-    event.preventDefault();
-    const user = {
-        name: inputPutName.value, 
-        age: inputPutAge.value
-    };
-    updateUser(inputPutUsers.value, user);
-};
-
-/*
-  События
-*/
-allUsersBtn.addEventListener("click", getAllUsers);
-usersIdBtn.addEventListener("click", findUserName);
-usersAddBtn.addEventListener("click", addNewUsers);
-usersDelBtn.addEventListener("click", deleteUser);
-usersPutBtn.addEventListener("click", putUser);
