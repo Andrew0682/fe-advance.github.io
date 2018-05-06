@@ -1,0 +1,17 @@
+.input-form__btn {
+  margin: 20px 20px;
+}
+
+.input-form {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: auto;
+
+}
+
+.result {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
