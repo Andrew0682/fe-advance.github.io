@@ -5,24 +5,28 @@ body {
 
 form {
   padding: 10px 20px;
-  box-shadow: 0 0 2px 2px rgba(#414141, 0.3);
+  box-shadow: 0 0 1px 1px;
 }
 
 .results {
   margin-top: 40px;
-  li {
+}
+.results ul{
+  margin-top: 100px;
+}
+.results li{
     display: flex;
     margin-bottom: 10px;
-    &::before {
+  }
+.results li::before {
       display: inline-block;
       content: "\2014";
       margin-right: 4px;
-    }
-  }
-  .success {
+ }
+
+.results .success {
     color: #4caf50;
   }
-  .error {
-    color: #f44336;
-  }
+.results .error {
+   color: #f44336;
 }
