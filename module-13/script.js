@@ -1,52 +1,61 @@
+
 const firstname = document.getElementById("first_name");
 const lastname = document.getElementById("last_name");
 const tel = document.getElementById("tel");
 const submitBtn = document.getElementById("submit-btn");
 const resultsList = document.querySelector(".results");
 
-submitBtn.addEventListener("click", validate);
-
-function validate(evt) {
-  evt.preventDefault();
-
-  const res = {
-    'firstName': '',
-    'lastName': '',
-    'tel': ''
-  }
-
-  res.firstName = {
-    'name': 'First name',
-    'value': firstname.value,
-    'validate': (/^[A-zА-яёЁ]+(\s[A-zА-яёЁ]+){0,2}$/.test(firstname.value))
-  }
-
-  res.lastName = {
-    'name': 'Last name',
-    'value': lastname.value,
-    'validate': (/^[A-zА-яёЁ]+((\s*-\s*|\s+)[A-zА-яёЁ]+)?$/.test(lastname.value))
-  }
-
-  res.tel = {
-    'name': 'Tel number',
-    'value': '',
-    'validate': (/^\+\d[\s-]*(\d[\s-]*){10}\d$/.test(tel.value))
-  }
-
-  if (res.tel.validate) {
-    const d = tel.value.replace(/[^0-9]/g, '').split('');
-    res.tel.value = `tel +${d[0]}${d[1]}${d[2]} ${d[3]}${d[4]} ${d[5]}${d[6]} ${d[7]}${d[8]} ${d[9]}${d[10]}${d[11]}`;
-  } else {
-    res.tel.value = tel.value;
-  }
-  showResults(res);
+//Обьект для хранения информации юзера
+const userData = {
+  firstName: '',
+  lastName: '',
+  phoneNumber: '',
+  validation: false
 }
 
-function showResults(results) {
-  let html = '';
-  Object.values(results).map(el => {
-    html += el.validate ? `<li class="success">SUCCESS: ${el.name} passed validation</li>` : `<li class="error">ERROR: ${el.name} failed validation</li>`;
-  });
-  resultsList.innerHTML = html;
-  console.log(results);
+//Проверка на валидацию формы
+const firstNameLat = /^([^\d\s\-\_]+[a-z]\s)?([^\d\s\-\_]+[a-z]\s)?([^\d\s\-\_]+[a-z])$/i;
+const lastNameLat  = /^([^\d\s\-\_]+[a-z])\s?-?\s?([^\d\s\-\_]+[a-z])$/i;
+const regNum = /^\+[\d(\)\ -]{11}\d$/;
+
+//Функция валидации
+const validate = event => {
+  event.preventDefault();
+  //Проверка на заполненные поля
+  if(firstname.value && lastname.value && tel.value){
+    //Проверка на валидацию формы и присвоение значения переменным
+    let name = firstNameLat.test(firstname.value);
+    let last = lastNameLat.test(lastname.value);
+    let phone = regNum.test(tel.value);
+    let arr = []; //Массив агрументов true false по результатам проверки
+    arr.push(name, last, phone);
+    showResults(arr);
+
+    //Если все три поля заполнены правильно, записываем значения в обьект userData
+    if(name && last && phone){
+       userData.firstName = firstname.value;
+       userData.lastName = lastname.value;
+       userData.phoneNumber = tel.value.replace(/[\s-]g/, '').replace('/^(\+{1}\d{3})(\d{2})(\d{2})(\d{2})(\d{3})$/, $1 $2 $3 $4 $5');
+       userData.validation = true; // Присваеваем значение о прохождении валидации
+       console.log(userData)
+    } 
+  }
+    //Заполните все поля
+    else{
+      resultsList.insertAdjacentHTML('beforeEnd', `<li class = "errors">Put in all rows plz</li>`);
+    } 
 }
+
+//Функция вывода результата на экран
+const showResults = results => {
+  results.forEach(function(i){ //Проверяем массив на значения true false
+    if(i){
+      resultsList.insertAdjacentHTML('beforeEnd', `<li class="success">SUCCESS: passed validation</li>`); // true
+    } else {
+      resultsList.insertAdjacentHTML('beforeEnd', `<li class="error">ERROR: failed validation</li>`); // false
+    } 
+  }); 
+}
+
+// Кнопка и событие клин по кнопке
+submitBtn.addEventListener("click", validate); 
