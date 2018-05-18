@@ -7,71 +7,48 @@
 6) При нажатии на кнопку stop, метод stopwatch.stop сохраняет значение текущего момента времени в stopTime и записывает 
 разницу между startTime и stopTime в interval. А метод stopwatch.getTime возвращает значение поля interval, которое необходимо вывести в консоль.
 7) Для класса Timer создать статический метод timeToNY который возвращает кол-во дней от сегодня и до Нового Года.*/
-
-let startButton = document.querySelector("#start");
-let stopButton = document.querySelector("#stop");
-let timerResult = document.querySelector("#timer_result");
-let txtResult = document.createElement("p");
-timerResult.after(txtResult);
-
-let timeNewYear = new Date("December 31 2018 23:59");
-
-let time = 0;
-let timer = {};
-
+const resultTime = document.querySelector('.result');
 
 class Timer {
-    constructor(startTime, stopTime, interval) {
-        this.startTime = start;
-        this.stopTime = stop;
-        this.interval = interval;
-    };
-    start() {
-        timer = setInterval(function () {
-            time++;
-            timerResult.textContent = time;
-        }, 1000);
-        this.startTime = time;
-    };
-
-    stop() {
-        clearInterval(timer);
-        this.stopTime = time;
-        let someRes = Math.floor(this.stopTime - this.startTime);
-        this.interval = someRes;
-
-    };
-
-    getTime() {
-        console.log(this.interval);
-    };
-
-    static timeToNY() {
-        let today = new Date();
-        let leftTime = timeNewYear.getTime() - today.getTime();
-        let leftDate = Math.floor(leftTime / 86400000);
-
-        return leftDate;
-    };
-
+  constructor(startTime, stopTime, interval) {
+    this.startTime = startTime;
+    this.stopTime = stopTime;
+    this.interval = interval;
+  }
+  start() {
+    this.startTime = Date.now();
+    resultTime.innerHTML = 'operation is carried...';
+  }
+  stop() {
+    this.stopTime = Date.now();
+    this.interval = (this.stopTime - this.startTime) / 1000;
+  }
+  getTime() {
+    resultTime.innerHTML = `operation is completed! Totall time: ${this.interval} sec.`;
+  }
+  static get timeToNY() {
+    const today = Date.now();
+    const nextYear = new Date(2019, 0, 1).getTime();
+    return Math.floor((nextYear - today) / 86400000);
+  }
 }
 
-let time1 = new Timer(10, 15, 5);
-let time2 = new Timer(16, 20, 4);
-let time3 = new Timer(21, 25, 4);
 
-let stopwatch = new Timer();
+const stopwatch = new Timer();
+const timer1 = new Timer(10, 15, 5);
+const timer2 = new Timer(16, 20, 4);
+const timer3 = new Timer(21, 25, 4);
+console.log(timer1, timer2, timer3);
 
-startButton.addEventListener('click', startWatchTime);
-stopButton.addEventListener('click', stopWatchTime);
-
-
-function startWatchTime() {
+const onClickHandlers = (e) => {
+  if (e.target.classList.contains('start-btn')) {
     stopwatch.start();
-};
-
-function stopWatchTime() {
+  }
+  if (e.target.classList.contains('stop-btn')) {
     stopwatch.stop();
     stopwatch.getTime();
-    txtResult.textContent = `До Нового Года осталось ${Timer.timeToNY()} дней!`;
+  }
 };
+
+resultTime.innerHTML = `До Нового Года осталось: ${Timer.timeToNY} дней!`;
+document.addEventListener('click', onClickHandlers);

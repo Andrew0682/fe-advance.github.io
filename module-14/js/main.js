@@ -7,32 +7,40 @@
 // При нажатии на stop, значение interval выводится в консоль.
 
 
-const startButton = document.querySelector(".start");
-const stopButton = document.querySelector(".stop");
-const result = document.querySelector(".result");
+const resultTime = document.querySelector('.result');
 
-function Timer() {
-    
+function Timer() { 
+  this.startTime = '';
+  this.stopTime = '';
+  this.interval = '';
+}
+
+const timerObj = new Timer(); 
+
+Timer.prototype.Start = function Start() { 
+  this.startTime = Date.now();
+};
+Timer.prototype.Stop = function Stop() { 
+  this.stopTime = Date.now();
+  this.interval = (this.stopTime - this.startTime) / 1000; 
 };
 
+Object.defineProperty(Timer.prototype, 'Start', { 
+  enumerable: false,
+});
+Object.defineProperty(Timer.prototype, 'Stop', { 
+  enumerable: false,
+});
 
-// start method
-Timer.prototype.start = function () {
-    this.startTimer = new Date;
-    console.log(this.startTimer);
+const onClickHandlers = (e) => {
+  if (e.target.classList.contains('start-btn')) {
+    timerObj.Start();
+    resultTime.innerHTML = 'Операция выполняется...';
+  }
+  if (e.target.classList.contains('stop-btn')) {
+    timerObj.Stop();
+    resultTime.innerHTML = `Операция завершена!\n Общее время: ${timerObj.interval} сек.`;
+  }
 };
-// stop timer method
-Timer.prototype.stop = function () {
-    this.stopTimer = new Date;
-    console.log(this.stopTimer);
-    this.interval = this.stopTimer - this.startTimer ;
-    result.textContent = `Прошло ${this.interval} милисекунд!`;
-};
 
-
-
-const TimeShower = new Timer();
-
-startButton.addEventListener("click",() => {TimeShower.start()});
-stopButton.addEventListener("click", () => {TimeShower.stop()});
-
+document.addEventListener('click', onClickHandlers);

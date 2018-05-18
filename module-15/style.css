@@ -1,18 +1,17 @@
-.input-form__btn {
-  margin: 20px 20px;
+.btn-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
-
-.input-form {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  margin: auto;
-
+.start-btn {
+    margin-right: 25px;
 }
-
 .result {
-  text-align: center;
-  font-size: 32px;
-  font-weight: bold;
-  color: red;
+    font-size: 25px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
