@@ -48,7 +48,7 @@ class Rectangle extends Shape {
 }
 
 /*Создаем класс Circle который расширяет класс Shape*/
-class Circle extends Rectangle {
+class Circle extends Shape {
     constructor(color, initX, initY, initRadius) {
         super(color, initX, initY);
         this.initRadius = initRadius;
