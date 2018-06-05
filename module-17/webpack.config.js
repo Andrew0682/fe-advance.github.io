@@ -7,6 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const SRC_DIR = path.resolve(__dirname, 'src');
 const DIST_DIR = path.resolve(__dirname, 'dist');
 
+
 module.exports = {
   context: SRC_DIR,
   entry: {
@@ -19,6 +20,10 @@ module.exports = {
   },
   module: {
     rules: [
+      {
+        test: /(\.tpl|\.html)$/,
+        loader: 'lodash-template-webpack-loader',
+      },
       {
         test: /\.js$/,
         include: SRC_DIR,

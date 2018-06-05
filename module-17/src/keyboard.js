@@ -1,54 +1,113 @@
-// Не много улучшил функционал. Рандомно предлагает набрать буквы из клавиатуры.
-
-const task = [];
-let taskIndex = 0;
-let result = 0;
-const controlKeyboard = document.querySelector(".control__keyboard");
-const resultKeyboard = document.querySelector(".number__letters");
-const exercise = document.querySelector(".exercise");
-const clockface = document.querySelector(".clock__time");
-const buttons = Array.from(document.querySelectorAll("button"));
-const keys = "qwertyuiop[]asdfghjkl;'zxcvbnm,./ ".split("");
-
-const timer = {
-  startTime: "",
-  currentTime: "",
-  id: ""
-};
-
-
-// функция проигрывания звука
-const playSound = button => {
-  let note = button.getAttribute('data-note');
+const playSound = note => {
   const audio = document.querySelector(`audio[data-note=${note}]`);
   audio.currentTime = 0;
   audio.play();
 };
 
+const buttons = Array.from(document.querySelectorAll("button"));
+const keysString = "qwertyuiop[]asdfghjkl;'zxcvbnm,./";
+const keys = keysString.split("");
+const slider = document.querySelector("#slideThree");
+const activeBtn = {
+  node: null
+};
+let keyPressed = [];
 
-// функция поиска кнопки
-const findButton = (letter) => {
-  if (letter == " ") {
-    letter = 'space';
-  }
-  let button;
-  buttons.forEach(function (item, i, arr) {
-    if (item.textContent == letter) {
-      button = item;
-    }
+let string = '';
+let charsArr = [];
+
+const timerOutput = document.querySelector("#timer");
+const exercise = document.querySelector(".exercise");
+const exerciseInput = document.querySelector(".exercise__input");
+const exerciseBtn = document.querySelector(".exercise__button");
+
+const timer = {
+  currentTime: 0,
+  id: ""
+};
+
+
+if (localStorage.getItem("bestResult")) {
+
+  alert(`Ваш лучший результат - ${localStorage.getItem("bestResult")} правильных символов в секунду. Пройти еще раз чтобы улучшить результат`);
+}
+
+function keyboardPressed(event) {
+  // debugger;
+  if (activeBtn.node) {
+    activeBtn.node.classList.remove("keyboard__btn--active");
+  };
+
+  activeBtn.node = buttons.find(function (button) {
+
+    // если нажата не буква, приводим event.keyCode к ASCII и отдельно обрабатываем пробел
+    let a = event.keyCode;
+
+    if (a == 222) { a = 39 }
+    else if (a > 218) { a = a - 128 }
+    else if (a > 187) { a = a - 144 }
+    else if (a == 186) { a = 59 }
+    else if (a == 32) { return button.innerHTML == "space" }
+
+    return button.innerHTML.toUpperCase().charCodeAt(0) == a;
   });
-  return button;
-};
+
+  if (activeBtn.node) {
+    activeBtn.node.classList.add("keyboard__btn--active");
+    if (slider.checked) {
+      playSound(activeBtn.node.getAttribute("data-note"));
+    };
+  }
+}
+
+function startTimer(event) {
+  if (!timer.id) {
+    timer.id = setInterval(() => {
+      timer.currentTime += 10;
+      updateTimer(timer.currentTime);
+    }, 4);
+  };
+}
+
+function startExercise(event) {
+  debugger;
+  if (keyPressed.length < charsArr.length) {
+    keyPressed.push(event.key);
+    exerciseInput.innerHTML += event.key;
+  }
+
+  if (keyPressed.length == charsArr.length) {
+    clearInterval(timer.id);
+    countKPS(timer.currentTime);
+    window.removeEventListener("keydown", startTimer);
+    window.removeEventListener("keydown", keyboardPressed);
+    window.removeEventListener("keydown", startExercise);
+  }
+}
+
+function countKPS(time) {
+  let correctCounter = 0;
+  for (let i = 0; i < charsArr.length; i++) {
+    if (charsArr[i] == keyPressed[i]) { correctCounter++ }
+  };
+  let speed = Math.round(correctCounter / (time / 1000) * 1000) / 1000;
+
+  // браузеру нужно время, что прорисовать часы и подсветку последней клавиши,
+  // алерт выскакивает не дожидаясь, поэтому добавила 20мс
+  setTimeout(() => alert(`Ваша скорость: ${speed} правильных символов в секунду. 
+    
+Чтобы пройти еще раз, перегрузите страницу или нажмите кнопку "Пройти упражнение".`), 20);
+
+  if (localStorage.getItem("bestResult") < speed) {
+    localStorage.setItem("bestResult", speed);
+  }
+}
+
+function updateTimer(time) {
+  timerOutput.textContent = getFormattedTime(time);
+}
 
 
-// функция подстветки кнопки
-const lightButton = (button) => {
-  button.classList.add("keyboard__btn--active");
-  setTimeout(() => { button.classList.remove("keyboard__btn--active") }, 200);
-};
-
-
-// функция для красивого формата времени
 function getFormattedTime(time) {
   const date = new Date(time);
   const mt =
@@ -56,110 +115,27 @@ function getFormattedTime(time) {
   const sc =
     date.getSeconds() > 9 ? date.getSeconds() : "0" + date.getSeconds();
   const ms =
-    date.getMilliseconds() < 10
-      ? "00" + date.getMilliseconds()
-      : date.getMilliseconds() < 100
-        ? "0" + date.getMilliseconds()
-        : date.getMilliseconds();
-
+    date.getMilliseconds() < 100 ? "0" + Math.ceil(date.getMilliseconds() / 10) : Math.ceil(date.getMilliseconds() / 10);
   return `${mt}:${sc}:${ms}`;
 }
 
-
-// функция для обнуления таймра
-function updateClockface(time) {
-  clockface.textContent = getFormattedTime(time);
-}
-
-
-// функция старт
-function startTimer() {
-    timer.id = setInterval(() => {
-    updateClockface(timer.currentTime++)
-  }, 1);
-  console.log(`таймер ${timer.id}, st=${timer.startTime}, ct=${timer.currentTime}`);
-};
-
-
-// функция стоп таймер
-function stopTimer() {
-  clearInterval(timer.id);
-  timer.startTime = timer.currentTime;
-  timer.id = "";
-  console.log(`таймер ${timer.id}, st=${timer.startTime}, ct=${timer.currentTime}`);
-};
-
-
-// функция записи введеных символов 
-function letterList(letter) {
-    controlKeyboard.textContent += letter;
-}
-
-
-// функция создания рандомного задания
-function createTask () {
+function exerxiseBtnPressed() {
+  debugger;
+  exerciseInput.textContent = '';
+  string = '';
   for (let i = 0; i < 5; i++) {
-    let index = Math.floor(Math.random() * keys.length);
-    let letter = keys[index];
-    task.push(letter);
-    exercise.textContent += letter;
-  }; 
-};
-
-
-// функция подсчета результата
-function countKPS(){
-  result = timer.currentTime/task.length;
-  resultKeyboard.textContent = result;
-  return result;
+    string += keysString.charAt(Math.floor(Math.random() * keysString.length));
+  }
+  exercise.textContent = `Наберите строку: ${string}`;
+  charsArr = string.split("");
+  keyPressed = [];
+  window.addEventListener("keydown", startTimer);
+  window.addEventListener("keydown", startExercise);
+  window.addEventListener("keydown", keyboardPressed);
 }
 
-
-const record = document.querySelector(".record");
-record.textContent += localStorage.getItem("recordScore");
-console.log(record);
-createTask();
-
-const callback = function (param) {
-
-  if(timer.id == ""){
-    startTimer();
-  }
-  
-  // 0. отсеиваем лишние клавиши
-  let findKey = keys.findIndex((k) => k == param.key);
-  if (findKey == -1) {
-    return;
-  };
-
-  // 1. Найти кнопку
-  let button = findButton(param.key);
-
-  letterList(param.key);
-
-  // 2. Подсветить кнопку
-  lightButton(button);
-
-  //  Play sound
-    playSound(button);
-  
-  // жду правильную клавишу
-  if(param.key == task[taskIndex]) {
-    taskIndex +=1;
-  }
-
-  // если задание пройдено
-  if(taskIndex >= task.length){
-    stopTimer();
-    let result = countKPS();
-    let recordScore = localStorage.getItem("recordScore");
-    if(recordScore > result){
-      localStorage.setItem("recordScore",result);
-      recordScore.textContent = result;
-    }
-  }
-};
+exerciseBtn.addEventListener("click", exerxiseBtnPressed);
 
 
-window.addEventListener("keydown", callback);
+
 

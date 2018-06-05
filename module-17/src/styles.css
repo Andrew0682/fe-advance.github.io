@@ -1,5 +1,6 @@
 html {
   box-sizing: border-box;
+  color: white;
 }
 
 *,
@@ -16,4 +17,15 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+.header {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+}
+h2 {
+  color: white;
+}
+button {
+  margin: 5px;
 }
